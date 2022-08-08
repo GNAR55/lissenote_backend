@@ -36,11 +36,4 @@ def get_names(word_list):
     return nicenames
 
 if __name__ == "__main__":
-    # print(get_links(get_names(["transistor","inductor","moore"])))
-
-    aaa = [('digital communication', 0.5269), ('analog information', 0.5105), ('principles communications', 0.5047), ('communication systes', 0.4941), ('informain signals', 0.4922), ('analogu informain', 0.4851), ('commuinthis courses', 0.438), ('principles commuication', 0.4347)]
-
-    ls = []
-    for key, val in aaa:
-        ls.append(key)
-    print(get_links(['digital communication', 'analog information', 'principles communications', 'communication systes', 'informain signals', 'analogu informain', 'commuinthis courses', 'principles commuication']))
+    print(get_links(get_names(["transistor","inductor","moore"])))

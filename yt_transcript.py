@@ -3,6 +3,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from urllib import parse
 
 def video_id(value):
+    '''Returns video id from url.'''
     query = parse.urlparse(value)
     if query.hostname == 'youtu.be':
         return query.path[1:]

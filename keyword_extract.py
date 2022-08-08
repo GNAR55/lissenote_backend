@@ -1,17 +1,20 @@
-from ast import keyword
 from keybert import KeyBERT
 from keyphrase_vectorizers import KeyphraseCountVectorizer
 from textblob import TextBlob
 
-def get_keywords_v(doc, correct=False):                #doc = ["..."]
-    kw_model = KeyBERT()
-    vectorizer = KeyphraseCountVectorizer()
+kw_model = KeyBERT()
+vectorizer = KeyphraseCountVectorizer()
+
+def get_keywords_v(doc, correct=False, num=8):                #doc = ["..."]
+    text = ""
+
+    for i in doc:
+        text+=i
 
     if correct:
-        for i in range(len(doc)):
-            doc[i] = str(TextBlob(doc[i]).correct())
+        text = str(TextBlob(text).correct())
 
-    res = kw_model.extract_keywords(docs=doc, vectorizer=vectorizer, top_n=8)
+    res = kw_model.extract_keywords(docs=text, vectorizer=vectorizer, top_n=num)
 
     keywords = [word for (word, dist) in res]
 
