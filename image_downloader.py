@@ -1,7 +1,7 @@
 import urllib.request
 import os
 
-from image_link_fetcher import get_img_links
+from image_link_fetcher import get_img_links, get_names
 
 def download_images(image_links,file_path='./images/'):
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -17,4 +17,4 @@ def download_images(image_links,file_path='./images/'):
 
 if __name__=="__main__":
     #give input as a dictionary with keywords and their respective url's, you get the output dictionary with keywords and their relative location as corresponding values
-    download_images(get_img_links(["cats","tabletennis","iiit kottayam"]))
+    download_images(get_img_links(get_names(["cats","tabletennis","iiit kottayam"])))

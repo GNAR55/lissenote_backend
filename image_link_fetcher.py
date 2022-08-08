@@ -27,5 +27,5 @@ def get_img_links(words):
 
 if __name__=="__main__":
     #input the list, you get a dictionary with the image links. The images are the first image of that wikipedia page
-    print(get_img_links(["cats","tabletennis","iiit kottayam"]))
+    print(get_img_links(get_names(["cats","tabletennis","iiit kottayam"])))
 
