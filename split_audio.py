@@ -11,6 +11,6 @@ def split_audio(file_path,out_dir,silent_duration=500,thresh=-55):
     )
 
     for i, chunk in enumerate(audio_chunks):
-        out_file = os.path.join(out_dir,"chunk{0}.wav".format(i))
+        out_file = os.path.join(out_dir,f"chunk{i:03d}.wav")
         print("exporting", out_file)
         chunk.export(out_file, format="wav")

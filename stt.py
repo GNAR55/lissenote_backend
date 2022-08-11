@@ -3,19 +3,13 @@ from os.path import exists
 
 model = SpeechRecognitionModel("jonatasgrosman/wav2vec2-large-xlsr-53-english")
 
-def stt(audio_path):
+def stt(audio_paths):
 
-    if not exists(audio_path):
-        print("File doesn't exist")
-        return
+    results = model.transcribe(audio_paths)
 
-    audio_paths = [audio_path]
+    transcriptions = [result['transcription'] for result in results]
 
-    transcriptions = model.transcribe(audio_paths)
-
-    transcription = transcriptions[0]['transcription']
-
-    return transcription
+    return transcriptions
 
 if __name__=="__main__":
     while True:
