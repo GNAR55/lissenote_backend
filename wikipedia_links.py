@@ -1,5 +1,19 @@
 import wikipedia
 import wikipediaapi
+import urllib.request
+import json
+import os
+
+def get_names(word_list):
+    """This function takes raw list inputs and searches them using wikipedia api and then stores the first results' of each entry in a list."""
+
+    nicenames = []
+    for word in word_list:
+        search_res = wikipedia.search(word)
+        if search_res:
+            nicenames.append(search_res[0])
+
+    return nicenames
 
 def get_links(nword_list):
     """this function takes refined list which comes from the get_names function and gives out a list with the corresponding wikipedia pages urls."""
@@ -18,22 +32,56 @@ def get_links(nword_list):
 
         #takes care of the edge case i.e if the page does not exist,just points to wikipedia home page
         else:
-            print("Page about",word,"does not exist")
+            print("Page about ",word," does not exist")
             page_links.append("https://www.wikipedia.org/")
 
     return(page_links)
 
-def get_names(word_list):
-    """This function takes raw list inputs and searches them using wikipedia api and then stores the first results' of each entry in a list."""
+def get_img_links(words):
+    images={}
 
-    nicenames = []
-    for word in word_list:
-        search_res = wikipedia.search(word)
-        if search_res:
-            nicenames.append(search_res[0])
-        # print(nicenames)
+    nwords = get_names(words)
+    
+    for keyword in nwords:
+        url = "http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles="+keyword
+        url = url.replace(" ","%20")
 
-    return nicenames
+        # store the response of URL
+        response = urllib.request.urlopen(url)
+        # storing the JSON response 
+        # from url in data
+        data_json = json.loads(response.read())
+        page_id = list(data_json['query']['pages'].keys())[0]
 
-if __name__ == "__main__":
+        try:
+            images[keyword] = data_json['query']['pages'][page_id]['original']['source']
+        except:
+            pass
+            
+    return(images)
+
+def download_images(image_links,file_path='./images/'):
+    """Outputs dictionary with keywords and their relative location as corresponding values"""
+
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+    image_loc = {}
+
+    for key in image_links:
+        full_path = file_path + key + os.path.splitext(image_links[key])[1]
+        image_loc[key] = full_path
+        urllib.request.urlretrieve(image_links[key], full_path)
+
+    return image_loc
+
+def get_images(words, file_path='./images/'):
+    ret = download_images(get_img_links(get_names(words)), file_path=file_path)
+    return ret
+
+def get_nlinks(words):
+    ret = get_links(get_names(words))
+    return ret
+
+if __name__=="__main__":
+    print(download_images(get_img_links(get_names(["cats","tabletennis","iiit kottayam"]))))
     print(get_links(get_names(["transistor","inductor","moore"])))

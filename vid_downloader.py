@@ -1,7 +1,7 @@
 import youtube_dl
 import os
 
-def download_as_wav(link,location,name):
+def download_as_wav(link,location,name="video.wav"):
     path = os.path.join(location,name)
     ydl_opts = {
         'format': 'bestaudio/best',
@@ -14,3 +14,5 @@ def download_as_wav(link,location,name):
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([link])
+    
+    return path

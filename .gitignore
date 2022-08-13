@@ -1,7 +1,9 @@
 # Custom
 *.wav
 *.mp3
+*.docx
 temp/
+images/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,65 +1,63 @@
-import json
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from werkzeug.utils import secure_filename
 from flask.json import jsonify
 import os
-import random
-import string
-import shutil
 
-from stt import stt
-from keyword_extract import get_keywords_v
-from split_audio import split_audio
+from vid_downloader import download_as_wav
+from helper import random_folder, folder_cleanup, audio_to_docx, transcripts_to_pdf
+from yt_transcript import video_id, getTranscript
 
 app = Flask("__name__")
 
 temp_path = './temp'
 
-@app.route("/keywords", methods=['POST'])
-def keywords():
+@app.route("/audio", methods=['POST'])
+def audio():
     file = request.files['audio']
 
     if not file:
         print("Invalid file")
         return
 
-    folder_name = os.path.join(temp_path, ''.join(random.choices(string.ascii_letters + string.digits, k=20)))
+    folder_name = random_folder(temp_path)
 
     filename = secure_filename(file.filename)
-
-    if not os.path.exists(folder_name):
-        os.makedirs(folder_name)
-
     audio_path = os.path.join(folder_name, filename)
     file.save(audio_path)
 
-    split_audio_path = os.path.join(folder_name, 'split_files/')
-    os.makedirs(split_audio_path)
+    pdf_path = audio_to_docx(folder_name, audio_path)
 
-    split_audio(file_path=audio_path, out_dir=split_audio_path)
+    response = send_from_directory(directory='.', path=pdf_path)
 
-    chunk_list = os.listdir(split_audio_path)
-    chunk_paths = [os.path.join(split_audio_path, chunk) for chunk in chunk_list]
-    chunk_paths.sort()
-    transcripts = stt(chunk_paths)
+    folder_cleanup(folder_name)
 
-    concat_transcript = ' '.join(transcripts)
+    return response
 
-    print(concat_transcript)
+@app.route("/yt", methods=['POST'])
+def yt():
+    url = request.form.get("url")
 
-    keywords = get_keywords_v(list(concat_transcript), num=5)
+    vid_id = video_id(url)
+    if not vid_id:
+        print("Invalid URL")
+        return jsonify([])
 
-    try:
-        shutil.rmtree(folder_name)
-    except Exception as e:
-        print(f"Failed to delete directory {folder_name}")
-        print(e)
+    folder_name = random_folder(temp_path)
 
-    ret = {'keywords': keywords}
+    extract_transcription = getTranscript(vid_id)
 
-    return (jsonify(ret))
+    if extract_transcription:
+        transcript = getTranscript(vid_id)
+        pdf_path = transcripts_to_pdf(folder_name, [transcript])
+    else:
+        audio_path = download_as_wav(url, folder_name)
+        pdf_path = audio_to_docx(folder_name, audio_path)
 
-    # return(jsonify({}))
+    response = send_from_directory(directory='.', path=pdf_path)
+
+    folder_cleanup(folder_name)
+
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)

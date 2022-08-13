@@ -87,11 +87,14 @@ def write_image(doc: Document, image: str, caption: str, width: float = 2):
     :param width: Width of image in the generated document
     :return: None
     """
-    p = doc.add_paragraph()
-    run = p.add_run()
-    run.add_picture(image, width=Inches(width))
-    p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-    write_caption(doc, caption)
+    try:
+        p = doc.add_paragraph()
+        run = p.add_run()
+        run.add_picture(image, width=Inches(width))
+        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        write_caption(doc, caption)
+    except:
+        pass
 
 
 def write_highlighted(doc: Document, content: str):
@@ -190,12 +193,15 @@ def to_docx(topic: str, paragraphs: List[str], keywords: List[str], image_conten
     docx = Document()
     write_heading(docx, topic, 0)
 
-    for paragraph, image_content in list(itertools.zip_longest(paragraphs, image_content)):
-        write_section(docx, paragraph, keywords, image_content)
+    for paragraph, caption in list(itertools.zip_longest(paragraphs, image_content)):
+        write_section(docx, paragraph, keywords, [image_content[caption], caption] if caption else [])
 
-    write_heading(docx, "Related Links", 1)
-    for link in links:
-        write_hyperlink(docx, link)
+    if links:
+        write_heading(docx, "Related Links", 1)
+        for link in links:
+            write_hyperlink(docx, link)
 
-    docx.save(os.path.join(output_directory, output_filename + '.docx'))
-    return docx
+    docx_path = os.path.join(output_directory, output_filename + '.docx')
+
+    docx.save(docx_path)
+    return docx_path
