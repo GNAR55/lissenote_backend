@@ -1,4 +1,4 @@
-from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound
+from youtube_transcript_api import YouTubeTranscriptApi
 # from youtube_transcript_api.formatters import TextFormatter
 from urllib import parse
 
@@ -40,7 +40,7 @@ def getTranscript(vid_id, choice=False):
     else:
         try:
             cc_data = YouTubeTranscriptApi.list_transcripts(vid_id).find_manually_created_transcript(['en']).fetch()
-        except NoTranscriptFound:
+        except:
             return None
 
     transcript = ""
