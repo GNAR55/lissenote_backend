@@ -28,12 +28,11 @@ def folder_cleanup(folder_name):
 def transcripts_to_pdf(folder_name, transcript_list):
     concat_transcript = ' '.join(transcript_list)
 
-    print(concat_transcript)
-
+    # print(concat_transcript)
+    
     keywords = get_keywords_v(concat_transcript, num=5)
-
+    # print(keywords)
     image_links = get_images(keywords, file_path=os.path.join(folder_name, 'images/'))
-
     docx_path = to_docx(keywords[0], transcript_list, keywords, image_links, get_nlinks(keywords), output_directory=folder_name)
     to_pdf(docx_path)
 

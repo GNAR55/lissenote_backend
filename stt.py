@@ -1,14 +1,10 @@
-from huggingsound import SpeechRecognitionModel
-from os.path import exists
+from speech_model import Model
 
-model = SpeechRecognitionModel("jonatasgrosman/wav2vec2-large-xlsr-53-english")
-
+model = Model(model = "JustAHomosapien/wav2vec2-base-nptel-demo-colab", processor = "jonatasgrosman/wav2vec2-large-xlsr-53-english",LM=True,device="cpu")
 def stt(audio_paths):
 
-    results = model.transcribe(audio_paths)
-
-    transcriptions = [result['transcription'] for result in results]
-
+    transcriptions = model.transcribe(audio_paths)
+    print(transcriptions)
     return transcriptions
 
 if __name__=="__main__":

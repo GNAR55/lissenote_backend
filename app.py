@@ -13,6 +13,10 @@ temp_path = './temp'
 
 @app.route("/audio", methods=['POST'])
 def audio():
+    '''
+    Basic Usage:
+    curl -F audio=@new1.wav http://http://127.0.0.1:5000/audio
+    '''
     file = request.files['audio']
 
     if not file:
@@ -35,6 +39,10 @@ def audio():
 
 @app.route("/yt", methods=['POST'])
 def yt():
+    '''
+    Basic Usage:
+    curl -F url=https://www.youtube.com/watch?v=dQw4w9WgXcQ http://localhost:5000/yt
+    '''
     url = request.form.get("url")
 
     vid_id = video_id(url)
