@@ -47,7 +47,10 @@ def get_img_links(words):
         url = url.replace(" ","%20")
 
         # store the response of URL
-        response = urllib.request.urlopen(url)
+        try:
+            response = urllib.request.urlopen(url)
+        except:
+            continue
         # storing the JSON response 
         # from url in data
         data_json = json.loads(response.read())

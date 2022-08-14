@@ -4,7 +4,6 @@ model = Model(model = "JustAHomosapien/wav2vec2-base-nptel-demo-colab", processo
 def stt(audio_paths):
 
     transcriptions = model.transcribe(audio_paths)
-    print(transcriptions)
     return transcriptions
 
 if __name__=="__main__":
