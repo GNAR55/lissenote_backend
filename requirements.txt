@@ -56,6 +56,7 @@ pydub==0.25.1
 Pygments==2.12.0
 pygtrie==2.5.0
 pyparsing==3.0.9
+pypi-kenlm==0.1.20220713
 python-dateutil==2.8.2
 python-docx==0.8.11
 python-slugify==6.1.2

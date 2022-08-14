@@ -5,6 +5,7 @@
         "project_name": "lissenote-backe",
         "runtime": "python3.8",
         "s3_bucket": "zappa-qx8bnmv33",
-        "aws_region":"ap-south-1"
+        "aws_region":"ap-south-1",
+        "slim_handler": "true"
     }
 }
