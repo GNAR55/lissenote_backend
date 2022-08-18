@@ -14,13 +14,12 @@ class Model:
   def __init__(self,model,processor,LM=False,device="cpu"):
     print("Loading model...")
     self.device = device
-    self.model = Wav2Vec2ForCTC.from_pretrained(model).to(self.device)
+    self.model = Wav2Vec2ForCTC.from_pretrained(model,revision="413f0f2fb9aaf2a203ea7b0b2ea5613c29417fb6").to(self.device)
     self.LM = LM
     if self.LM:
       self.processor = Wav2Vec2ProcessorWithLM.from_pretrained(processor)
     else:
       self.processor = Wav2Vec2Processor.from_pretrained(processor)
-  
   def transcribe(self, paths):
         sampling_rate = self.processor.feature_extractor.sampling_rate
         result = []

@@ -9,6 +9,6 @@ def stt(audio_paths):
 if __name__=="__main__":
     while True:
         try:
-            print(stt(input("Path: ")))
+            print(stt([input("Path: ")]))
         except:
             pass
