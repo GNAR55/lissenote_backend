@@ -1,11 +1,10 @@
-import torch
 from keybert import KeyBERT
 from keyphrase_vectorizers import KeyphraseCountVectorizer
 from textblob import TextBlob
 kw_model = KeyBERT()
 vectorizer = KeyphraseCountVectorizer()
 
-def get_keywords_v(text, correct=False, num=8):                #text = ["..."]
+def get_keywords_v(text, correct=False, num=20):                #text = ["..."]
     """Returns keywords sorted in order of decreasing weight"""
 
     if correct:

@@ -9,6 +9,7 @@ from split_audio import split_audio
 from wikipedia_links import get_nlinks, get_images
 from generate_docx import to_docx
 from generate_pdf import to_pdf
+from punctuate import punctaute
 
 def random_folder(temp_path):
     folder_name = os.path.join(temp_path, ''.join(random.choices(string.ascii_letters + string.digits, k=20)))
@@ -25,7 +26,9 @@ def folder_cleanup(folder_name):
         print(f"Failed to delete directory {folder_name}")
         print(e)
 
-def transcripts_to_pdf(folder_name, transcript_list):
+def transcripts_to_pdf(folder_name, transcript_list,punctuation=False):
+    if punctuation:
+        transcript_list = [punctaute(x) for x in transcript_list]
     concat_transcript = ' '.join(transcript_list)
 
     print(concat_transcript)
@@ -34,8 +37,7 @@ def transcripts_to_pdf(folder_name, transcript_list):
 
     image_links = get_images(keywords, file_path=os.path.join(folder_name, 'images/'))
     image_content = list(zip(list(image_links.values()),list(image_links.keys())))
-    print(image_content)
-    docx_path = to_docx(keywords[0], transcript_list, keywords, image_content, get_nlinks(keywords), output_directory=folder_name)
+    docx_path = to_docx(keywords[0].title(), transcript_list, keywords, image_content, get_nlinks(keywords), output_directory=folder_name)
     to_pdf(docx_path)
 
     pdf_path = os.path.splitext(docx_path)[0] + '.pdf'
@@ -52,5 +54,5 @@ def audio_to_docx(folder_name, audio_path):
     chunk_paths.sort()
     transcripts = stt(chunk_paths)
 
-    pdf_path = transcripts_to_pdf(folder_name, transcripts)
+    pdf_path = transcripts_to_pdf(folder_name, transcripts,punctuation=True)
     return pdf_path

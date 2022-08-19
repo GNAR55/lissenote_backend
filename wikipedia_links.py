@@ -4,6 +4,8 @@ import urllib.request
 import json
 import os
 
+from cairosvg import svg2png
+
 def get_names(word_list):
     """This function takes raw list inputs and searches them using wikipedia api and then stores the first results' of each entry in a list."""
 
@@ -74,6 +76,13 @@ def download_images(image_links,file_path='./images/'):
         full_path = file_path + key + os.path.splitext(image_links[key])[1]
         image_loc[key] = full_path
         urllib.request.urlretrieve(image_links[key], full_path)
+        name,ext = os.path.splitext(image_loc[key])
+        if(ext == '.svg'):
+            new_path = full_path[:-3]+'png'
+            svg2png(url=image_loc[key],write_to=new_path)
+            os.remove(image_loc[key])
+            image_loc[key] = new_path
+            print(image_loc[key])
 
     return image_loc
 
