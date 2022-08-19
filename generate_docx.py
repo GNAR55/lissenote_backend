@@ -22,7 +22,6 @@ def write_paragraph(doc: Document, content: str) -> Paragraph:
 def write_text(para: Paragraph, content: str):
     """
     Writes to document.
-
     :param para: Paragraph
     :param content: Content to be written
     :return: None
@@ -33,7 +32,6 @@ def write_text(para: Paragraph, content: str):
 def write_bold(para: Paragraph, content: str):
     """
     Writes in bold.
-
     :param para: Paragraph
     :param content: Content to be written
     :return: None
@@ -87,14 +85,14 @@ def write_image(doc: Document, image: str, caption: str, width: float = 2):
     :param width: Width of image in the generated document
     :return: None
     """
-    try:
-        p = doc.add_paragraph()
-        run = p.add_run()
-        run.add_picture(image, width=Inches(width))
-        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    
+    p = doc.add_paragraph()
+    run = p.add_run()
+    run.add_picture(image, width=Inches(width))
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    if caption:
         write_caption(doc, caption)
-    except:
-        pass
+    
 
 
 def write_highlighted(doc: Document, content: str):
@@ -129,7 +127,7 @@ def write_keyword(para: Paragraph, keyword: str):
     :param keyword: Important term
     :return: None
     """
-    run = para.add_run(keyword + " ")
+    run = para.add_run(keyword)
     run.bold = True
     run.font.highlight_color = WD_COLOR_INDEX.YELLOW
 
@@ -137,15 +135,16 @@ def write_keyword(para: Paragraph, keyword: str):
 def separate_keywords(text: str, keywords: List[str]) -> List[str]:
     """
     Separates keywords from text.
-
     :param text: Paragraph content
     :param keywords: Important term
     :return: List with text separated form keywords
     """
     indices = []
     for keyword in keywords:
-        indices += [i.start() for i in re.finditer(keyword, text)]
-        indices += [i.end() for i in re.finditer(keyword, text)]
+        look = re.search(r"\b" + re.escape(keyword) + r"\b", text)
+        if look:
+            start, end = look.span()
+            indices.extend([start, end])
 
     indices = sorted(indices) if 0 in indices else [0] + sorted(indices)
     offsetted_indices = indices[1:]+[None]
@@ -155,7 +154,6 @@ def separate_keywords(text: str, keywords: List[str]) -> List[str]:
 def write_section(doc: Document, text: str, keywords: List[str], image_content: List[str] = []):
     """
     Writes one section consisting of text and a related image.
-
     :param doc: Document
     :param text: Text in a paragraph
     :param keywords: Important terms
@@ -172,14 +170,14 @@ def write_section(doc: Document, text: str, keywords: List[str], image_content: 
 
     if image_content:
         image, caption = image_content
-        write_image(doc, image, caption)
+        if image:
+            write_image(doc, image, caption)
     return p
 
 
 def to_docx(topic: str, paragraphs: List[str], keywords: List[str], image_content: List[List[str]], links: List[str], output_directory='.', output_filename: str = 'converted'):
     """
     Generates a docx file.
-
     :param str topic: Topic of the notes
     :param paragraphs: Paragraphs
     :param keywords: Important terms
@@ -193,8 +191,8 @@ def to_docx(topic: str, paragraphs: List[str], keywords: List[str], image_conten
     docx = Document()
     write_heading(docx, topic, 0)
 
-    for paragraph, caption in list(itertools.zip_longest(paragraphs, image_content)):
-        write_section(docx, paragraph, keywords, [image_content[caption], caption] if caption else [])
+    for paragraph, image_content in list(itertools.zip_longest(paragraphs, image_content)):
+        write_section(docx, paragraph, keywords, image_content)
 
     if links:
         write_heading(docx, "Related Links", 1)

@@ -1,7 +1,7 @@
+import torch
 from keybert import KeyBERT
 from keyphrase_vectorizers import KeyphraseCountVectorizer
 from textblob import TextBlob
-
 kw_model = KeyBERT()
 vectorizer = KeyphraseCountVectorizer()
 

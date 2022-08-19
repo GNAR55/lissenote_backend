@@ -33,7 +33,9 @@ def transcripts_to_pdf(folder_name, transcript_list):
     keywords = get_keywords_v(concat_transcript, num=5)
 
     image_links = get_images(keywords, file_path=os.path.join(folder_name, 'images/'))
-    docx_path = to_docx(keywords[0], transcript_list, keywords, image_links, get_nlinks(keywords), output_directory=folder_name)
+    image_content = list(zip(list(image_links.values()),list(image_links.keys())))
+    print(image_content)
+    docx_path = to_docx(keywords[0], transcript_list, keywords, image_content, get_nlinks(keywords), output_directory=folder_name)
     to_pdf(docx_path)
 
     pdf_path = os.path.splitext(docx_path)[0] + '.pdf'

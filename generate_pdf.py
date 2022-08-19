@@ -3,9 +3,7 @@ import os
 
 def to_pdf(docx_file: str):
     """
-    Converts docx file to pdf and saves it in the same location.
-    Requires abiword.
-    
+    Converts docx file to pdf and saves it in the same location
     :param docx_file: Path of docx file
     :return: Path to generated PDF
     """
