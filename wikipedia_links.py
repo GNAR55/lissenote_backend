@@ -83,6 +83,8 @@ def download_images(image_links,file_path='./images/'):
             os.remove(image_loc[key])
             image_loc[key] = new_path
             print(image_loc[key])
+        elif (ext == '.gif' or ext == '.pdf' or ext == '.docx'):
+            pass
 
     return image_loc
 

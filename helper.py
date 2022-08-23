@@ -28,12 +28,12 @@ def folder_cleanup(folder_name):
 
 def transcripts_to_pdf(folder_name, transcript_list,punctuation=False):
     if punctuation:
-        transcript_list = [punctaute(x) for x in transcript_list]
+        transcript_list = [punctaute(x) for x in transcript_list if x != ' ' and len(x.split()) > 1]
     concat_transcript = ' '.join(transcript_list)
 
     print(concat_transcript)
     
-    keywords = get_keywords_v(concat_transcript, num=5)
+    keywords = get_keywords_v(concat_transcript)
 
     image_links = get_images(keywords, file_path=os.path.join(folder_name, 'images/'))
     image_content = list(zip(list(image_links.values()),list(image_links.keys())))

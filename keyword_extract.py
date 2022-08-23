@@ -1,16 +1,18 @@
 from keybert import KeyBERT
 from keyphrase_vectorizers import KeyphraseCountVectorizer
 from textblob import TextBlob
+from math import sqrt,ceil
 kw_model = KeyBERT()
 vectorizer = KeyphraseCountVectorizer()
 
-def get_keywords_v(text, correct=False, num=20):                #text = ["..."]
+def get_keywords_v(text, correct=False, div=0.7):                #text = ["..."]
     """Returns keywords sorted in order of decreasing weight"""
-
+    num=ceil(sqrt(len(text.split())))//2
+    print(num)
     if correct:
         text = str(TextBlob(text).correct())
 
-    res = kw_model.extract_keywords(docs=text, vectorizer=vectorizer, top_n=num)
+    res = kw_model.extract_keywords(docs=text, vectorizer=vectorizer, diversity=div, top_n=num)
     res.sort(key = lambda x: x[1], reverse=True)
 
     keywords = [word for (word, dist) in res]

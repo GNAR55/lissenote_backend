@@ -15,7 +15,7 @@ temp_path = './temp'
 def audio():
     '''
     Basic Usage:
-    curl -F audio=@new1.wav http://http://127.0.0.1:5000/audio
+    curl -F audio=@new1.wav http://http://127.0.0.1:5000/audio -o notes.pdf
     '''
     file = request.files['audio']
 
