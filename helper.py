@@ -108,7 +108,16 @@ def yt_processing(request, to_pdf=True):
 
     if extract_transcription:
         transcript = getTranscript(vid_id)
-        docx_path = transcripts_to_docx(folder_name, [transcript])
+        split_transcript = transcript.split('.')
+        split_transcript = [x.strip() for x in split_transcript]
+        paragraphs = []
+        para = ''
+        for i in range(len(split_transcript)):
+            para += split_transcript[i]+'.'
+            if (i+1)%5 == 0:
+                paragraphs.append(para)
+                para = ''
+        docx_path = transcripts_to_docx(folder_name, paragraphs)
     else:
         audio_path = download_as_wav(url, folder_name)
         docx_path = audio_to_docx(folder_name, audio_path)
