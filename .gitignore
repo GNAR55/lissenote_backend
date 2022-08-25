@@ -4,9 +4,10 @@
 *.docx
 *.pdf
 *.webm
+*.mpeg
+*.flac
+*.ogg
 temp/
-images/
-minimal/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
