@@ -40,7 +40,7 @@ def yttodocx():
     curl -F url=https://www.youtube.com/watch?v=dQw4w9WgXcQ http://localhost:5000/yttodocx -o notes.docx
     '''
     
-    return yt_processing(request, to_docx=False)
+    return yt_processing(request, to_pdf=False)
 
 @app.route("/")
 def index():
