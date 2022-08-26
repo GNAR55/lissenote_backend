@@ -13,8 +13,8 @@ def audiotopdf():
     curl -F audio=@new1.wav http://http://127.0.0.1:5000/audiotopdf -o notes.pdf
     '''
     
-    # return audio_processing(request, to_pdf=True,translate=True,language="hi")
-    return audio_processing(request, to_pdf=True)
+    return audio_processing(request, to_pdf=True,translate=True,language="hi")
+
 @app.route("/audiotodocx", methods=['POST'])
 def audiotodocx():
     '''
@@ -22,8 +22,7 @@ def audiotodocx():
     curl -F audio=@new1.wav http://http://127.0.0.1:5000/audiotodocx -o notes.docx
     '''
     
-    # return audio_processing(request, to_pdf=False,translate=True,language="hi")
-    return audio_processing(request, to_pdf=False)
+    return audio_processing(request, to_pdf=False,translate=True,language="")
 
 @app.route("/yttopdf", methods=['POST'])
 def yttopdf():

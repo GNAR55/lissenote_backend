@@ -114,7 +114,7 @@ def audio_processing(request, to_pdf=True,translate=False,language=''):
 
     return response
 
-def yt_processing(request, to_pdf=True):
+def yt_processing(request, to_pdf=True,translate=False,language=''):
     url = request.form.get("url")
 
     vid_id = video_id(url)
@@ -125,11 +125,11 @@ def yt_processing(request, to_pdf=True):
     folder_name = random_folder(temp_path)
 
     extract_transcription = getTranscript(vid_id)
-
     if extract_transcription:
         transcript = getTranscript(vid_id)
         split_transcript = transcript.split('.')
         split_transcript = [x.strip() for x in split_transcript]
+        
         paragraphs = []
         para = ''
         for i in range(len(split_transcript)):
@@ -137,10 +137,13 @@ def yt_processing(request, to_pdf=True):
             if (i+1)%5 == 0:
                 paragraphs.append(para)
                 para = ''
-        docx_path = transcripts_to_docx(folder_name, paragraphs)
+        if translate:
+            translator = Translator()
+            paragraphs = [translator.translate(x,dest=language).text for x in paragraphs]
+        docx_path = transcripts_to_docx(folder_name, paragraphs,translate,language)
     else:
         audio_path = download_as_wav(url, folder_name)
-        docx_path = audio_to_docx(folder_name, audio_path)
+        docx_path = audio_to_docx(folder_name, audio_path,translate,language)
 
     if to_pdf:
         pdf_path = docx_to_pdf(docx_path)
