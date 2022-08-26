@@ -10,7 +10,7 @@ CORS(app)
 def audiotopdf():
     '''
     Basic Usage:
-    curl -F audio=@new1.wav http://http://127.0.0.1:5000/audiotopdf -o notes.pdf
+    curl -F audio=@new1.wav http://127.0.0.1:5000/audiotopdf -o notes.pdf
     '''
     
     return audio_processing(request, to_pdf=True,translate=True,language="hi")
@@ -19,7 +19,7 @@ def audiotopdf():
 def audiotodocx():
     '''
     Basic Usage:
-    curl -F audio=@new1.wav http://http://127.0.0.1:5000/audiotodocx -o notes.docx
+    curl -F audio=@new1.wav http://127.0.0.1:5000/audiotodocx -o notes.docx
     '''
     
     return audio_processing(request, to_pdf=False,translate=True,language="")
