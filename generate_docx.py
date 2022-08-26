@@ -175,7 +175,7 @@ def write_section(doc: Document, text: str, keywords: List[str], image_content: 
     return p
 
 
-def to_docx(topic: str, paragraphs: List[str], keywords: List[str], image_content: List[List[str]], links: List[str], output_directory='.', output_filename: str = 'converted'):
+def to_docx(topic: str, paragraphs: List[str], keywords: List[str], image_content: List[List[str]], links: List[str], frames: List[str] = [], output_directory='.', output_filename: str = 'converted'):
     """
     Generates a docx file.
     :param str topic: Topic of the notes
@@ -190,6 +190,9 @@ def to_docx(topic: str, paragraphs: List[str], keywords: List[str], image_conten
     """
     docx = Document()
     write_heading(docx, topic, 0)
+
+    for i in frames:
+        image_content.append([i, ''])
 
     for paragraph, image_content in list(itertools.zip_longest(paragraphs, image_content)):
         write_section(docx, paragraph, keywords, image_content)

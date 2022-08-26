@@ -1,3 +1,5 @@
+from email.mime import audio
+from logging import captureWarnings
 import os
 import random
 import string
@@ -14,7 +16,8 @@ from generate_docx import to_docx
 from generate_pdf import to_pdf
 from punctuate import punctaute
 from yt_transcript import video_id, getTranscript
-from vid_downloader import download_as_wav
+from vid_downloader import download_as_mp3
+from capture_frames import get_frames
 
 temp_path = './temp'
 
@@ -39,7 +42,7 @@ def docx_to_pdf(docx_path):
     pdf_path = os.path.splitext(docx_path)[0] + '.pdf'
     return pdf_path
 
-def transcripts_to_docx(folder_name, transcript_list,punctuation=False):
+def transcripts_to_docx(folder_name, transcript_list,punctuation=False, frames=[]):
     if punctuation:
         transcript_list = [punctaute(x) for x in transcript_list if x != ' ' and len(x.split()) > 1]
     concat_transcript = ' '.join(transcript_list)
@@ -50,7 +53,7 @@ def transcripts_to_docx(folder_name, transcript_list,punctuation=False):
 
     image_links = get_images(keywords, file_path=os.path.join(folder_name, 'images/'))
     image_content = list(zip(list(image_links.values()),list(image_links.keys())))
-    docx_path = to_docx(keywords[0].title(), transcript_list, keywords, image_content, get_nlinks(keywords), output_directory=folder_name)
+    docx_path = to_docx(keywords[0].title(), transcript_list, keywords, image_content, get_nlinks(keywords), frames=frames, output_directory=folder_name)
 
     return docx_path
 
@@ -65,18 +68,23 @@ def audio_to_docx(folder_name, audio_path):
     chunk_paths.sort()
     transcripts = stt(chunk_paths)
 
-    docx_path = transcripts_to_docx(folder_name, transcripts,punctuation=True)
+    try:
+        frames = get_frames(audio_path, data_path=os.path.join(folder_name, 'data/'), captured_path=os.path.join(folder_name, 'captured/'))
+    except:
+        frames=[]
+
+    docx_path = transcripts_to_docx(folder_name, transcripts, punctuation=True, frames=frames)
 
     return docx_path
 
 def audio_processing(request, to_pdf=True):
+    folder_name = random_folder(temp_path)
+
     file = request.files['audio']
 
     if not file:
         print("Invalid file")
         return
-
-    folder_name = random_folder(temp_path)
 
     filename = secure_filename(file.filename)
     audio_path = os.path.join(folder_name, filename)
@@ -89,20 +97,20 @@ def audio_processing(request, to_pdf=True):
         response = send_from_directory(directory='.', path=pdf_path)
     else:
         response = send_from_directory(directory='.', path=docx_path)
-
+    
     folder_cleanup(folder_name)
 
     return response
 
 def yt_processing(request, to_pdf=True):
+    folder_name = random_folder(temp_path)
+
     url = request.form.get("url")
 
     vid_id = video_id(url)
     if not vid_id:
         print("Invalid URL")
         return jsonify([])
-
-    folder_name = random_folder(temp_path)
 
     extract_transcription = getTranscript(vid_id)
 
@@ -119,15 +127,16 @@ def yt_processing(request, to_pdf=True):
                 para = ''
         docx_path = transcripts_to_docx(folder_name, paragraphs)
     else:
-        audio_path = download_as_wav(url, folder_name)
-        docx_path = audio_to_docx(folder_name, audio_path)
+        video_path = download_as_mp3(url, folder_name)
+
+        docx_path = audio_to_docx(folder_name, video_path)
 
     if to_pdf:
         pdf_path = docx_to_pdf(docx_path)
         response = send_from_directory(directory='.', path=pdf_path)
     else:
         response = send_from_directory(directory='.', path=docx_path)
-
+    
     folder_cleanup(folder_name)
 
     return response
