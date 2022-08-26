@@ -52,24 +52,35 @@ def transcripts_to_docx(folder_name, transcript_list,translate,language,punctuat
     
     keywords = get_keywords_v(concat_transcript)
 
-    if translate:
+    if translate==True:
         translator = Translator()
-        image_links = get_images(keywords, file_path=os.path.join(folder_name, 'images/'))
-        captions = list(image_links.keys())
-        image_content = list(zip(list(image_links.values()),[translator.translate(x,dest=language).text for x in captions]))
+        # image_links = {}
+        # image_links = get_images(keywords, file_path=os.path.join(folder_name, 'images/'))
+        # captions = list(image_links.keys())
+        # print(image_links.values())
+        # print(captions)
+        # abc = [translator.translate(x,dest=language).text for x in captions]
+        # print(abc)
+        # image_content = list(zip(list(image_links.values()),[translator.translate(x,dest=language).text for x in captions]))
+
+        image_content = []
     
+        # nlinks = get_nlinks(keywords)
+        nlinks = []
+
         docx_path = to_docx(
             translator.translate(keywords[0].title(),dest=language).text, 
             [translator.translate(x,dest=language).text for x in transcript_list], 
             [translator.translate(x,dest=language).text for x in keywords], 
             image_content, 
-            get_nlinks(keywords),
+            nlinks,
             output_directory=folder_name,
             frames=frames)
     else:
-        image_links = get_images(keywords, file_path=os.path.join(folder_name, 'images/'))
-        captions = list(image_links.keys())
-        image_content = list(zip(list(image_links.values()),captions))
+        # image_links = get_images(keywords, file_path=os.path.join(folder_name, 'images/'))
+        # captions = list(image_links.keys())
+        # image_content = list(zip(list(image_links.values()),captions))
+        image_content = []
         docx_path = to_docx(
             keywords[0].title(),
             transcript_list, 
@@ -103,10 +114,18 @@ def audio_to_docx(folder_name, audio_path,translate,language):
 
 
 
-def audio_processing(request, to_pdf=True,translate=False,language=''):
+def audio_processing(request, to_pdf=True):
     folder_name = random_folder(temp_path)
     
     file = request.files['audio']
+    lang = request.form.get('toLang')
+
+    language=lang
+
+    if lang=='en':
+        translate=False
+    else:
+        translate=True
 
     if not file:
         print("Invalid file")
@@ -128,10 +147,18 @@ def audio_processing(request, to_pdf=True,translate=False,language=''):
 
     return response
 
-def yt_processing(request, to_pdf=True,translate=False,language=''):
+def yt_processing(request, to_pdf=True):
     folder_name = random_folder(temp_path)
 
     url = request.form.get("url")
+    lang = request.form.get('toLang')
+
+    language=lang
+
+    if lang=='en':
+        translate=False
+    else:
+        translate=True
 
     vid_id = video_id(url)
     if not vid_id:
