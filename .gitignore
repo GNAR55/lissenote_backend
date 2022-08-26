@@ -5,6 +5,7 @@
 *.pdf
 *.webm
 *.mpeg
+*.mp4
 *.flac
 *.ogg
 temp/

@@ -7,6 +7,7 @@ import shutil
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 from flask.json import jsonify
+from googletrans import Translator
 
 from stt import stt
 from keyword_extract import get_keywords_v
@@ -16,9 +17,8 @@ from generate_docx import to_docx
 from generate_pdf import to_pdf
 from punctuate import punctaute
 from yt_transcript import video_id, getTranscript
-from vid_downloader import download_as_mp3
+from vid_downloader import download_as_mp4
 from capture_frames import get_frames
-from googletrans import Translator
 
 temp_path = './temp'
 
@@ -192,7 +192,7 @@ def yt_processing(request, to_pdf=True):
             paragraphs = [translator.translate(x,dest=language).text for x in paragraphs]
         docx_path = transcripts_to_docx(folder_name, paragraphs,translate,language)
     else:
-        video_path = download_as_mp3(url, folder_name)
+        video_path = download_as_mp4(url, folder_name)
 
         docx_path = audio_to_docx(folder_name, video_path,translate,language)
 
