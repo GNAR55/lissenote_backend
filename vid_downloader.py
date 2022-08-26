@@ -1,14 +1,14 @@
 import youtube_dl
 import os
 
-def download_as_mp3(link,location,name="video.wav"):
+def download_as_mp3(link,location,name="video.mp4"):
     path = os.path.join(location,name)
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl':f'{path}',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
+            'preferredcodec': 'mp4',
             'preferredquality': '192',
         }],
     }

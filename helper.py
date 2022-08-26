@@ -81,12 +81,16 @@ def transcripts_to_docx(folder_name, transcript_list,translate,language,punctuat
         # captions = list(image_links.keys())
         # image_content = list(zip(list(image_links.values()),captions))
         image_content = []
+
+        # nlinks = get_nlinks(keywords)
+        nlinks = []
+
         docx_path = to_docx(
             keywords[0].title(),
             transcript_list, 
             keywords, 
             image_content, 
-            get_nlinks(keywords),
+            nlinks,
             output_directory=folder_name,
             frames=frames)
 
@@ -105,8 +109,13 @@ def audio_to_docx(folder_name, audio_path,translate,language):
 
     try:
         frames = get_frames(audio_path, data_path=os.path.join(folder_name, 'data/'), captured_path=os.path.join(folder_name, 'captured/'))
+        print("aaaaaaaaaaa")
+        print(frames)
     except:
         frames=[]
+        print("bbbbbbb")
+        print(frames)
+
 
     docx_path = transcripts_to_docx(folder_name, transcripts, translate, language, punctuation=True, frames=frames)
 
@@ -193,6 +202,6 @@ def yt_processing(request, to_pdf=True):
     else:
         response = send_from_directory(directory='.', path=docx_path)
     
-    folder_cleanup(folder_name)
+    # folder_cleanup(folder_name)
 
     return response
