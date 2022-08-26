@@ -17,7 +17,7 @@ def get_names(word_list):
 
     return nicenames
 
-def get_links(nword_list):
+def get_links(nword_list,language):
     """this function takes refined list which comes from the get_names function and gives out a list with the corresponding wikipedia pages urls."""
 
     wiki = wikipediaapi.Wikipedia('en')
@@ -92,8 +92,8 @@ def get_images(words, file_path='./images/'):
     ret = download_images(get_img_links(get_names(words)), file_path=file_path)
     return ret
 
-def get_nlinks(words):
-    ret = get_links(get_names(words))
+def get_nlinks(words,language='en'):
+    ret = get_links(get_names(words),language)
     return ret
 
 if __name__=="__main__":
